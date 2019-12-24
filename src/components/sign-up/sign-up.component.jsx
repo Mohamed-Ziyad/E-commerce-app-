@@ -37,6 +37,7 @@ class SignUp extends React.Component {
 			);
 			await createUserProfileDocument(user, { displayName }); //save this user to db
 
+			//--> this cause an error let it be fixed by the tutor or just comment it
 			this.setState({
 				//-->clear the form
 				displayName: '',
