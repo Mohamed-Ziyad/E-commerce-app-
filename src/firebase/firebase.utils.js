@@ -40,6 +40,20 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 	return userRef;
 };
 
+//--storing shop data to firebase
+export const addCollectionAndDocuments = async (collectionKey, objectToAdd) => {
+	const collectionRef = firestore.collection(collectionKey);
+
+	//--> batch wirte storing big file into database
+	const batch = firestore.batch();
+	objectToAdd.forEach(obj => {
+		const newDocRef = collectionRef.doc();
+		batch.set(newDocRef, obj);
+	});
+
+	return await batch.commit();
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
