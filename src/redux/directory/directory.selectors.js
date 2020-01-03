@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 
-const selectDirectory = state => state.directory;
+const selectDirectory = state => state.directory; //--> select the directory state
 
 export const selectDirectorySections = createSelector(
-  [selectDirectory],
-  directory => directory.sections
+	[selectDirectory], //--> input directory selector
+	directory => directory.sections, //--> out put the sections selector
 );
