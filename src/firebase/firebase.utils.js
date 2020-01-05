@@ -18,14 +18,13 @@ firebase.initializeApp(config);
 export const createUserProfileDocument = async (userAuth, additionalData) => {
 	if (!userAuth) return;
 
-	const userRef = firestore.doc(`users/${userAuth.uid}`); //use ref give the path of the collection or documents
+	const userRef = firestore.doc(`users/${userAuth.uid}`);
 
-	const snapShot = await userRef.get(); // snap shop gives the data which is provided by useref
+	const snapShot = await userRef.get();
 
 	if (!snapShot.exists) {
-		//--> if the data exist or not it's function provide by snapshot obj
-		const { displayName, email } = userAuth; //--> i need the name and email to create a new user so I'll get that from the auth obj
-		const createdAt = new Date(); //--> the user not exit this will create a new user
+		const { displayName, email } = userAuth;
+		const createdAt = new Date();
 		try {
 			await userRef.set({
 				displayName,
@@ -38,16 +37,17 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 		}
 	}
 
-	return userRef; //--> else retun the useref obj
+	return userRef;
 };
 
-//-->storing shop data to firebase
-export const addCollectionAndDocuments = async (collectionKey, objectToAdd) => {
+export const addCollectionAndDocuments = async (
+	collectionKey,
+	objectsToAdd,
+) => {
 	const collectionRef = firestore.collection(collectionKey);
 
-	//--> batch wirte storing big file into database
 	const batch = firestore.batch();
-	objectToAdd.forEach(obj => {
+	objectsToAdd.forEach(obj => {
 		const newDocRef = collectionRef.doc();
 		batch.set(newDocRef, obj);
 	});
@@ -56,7 +56,7 @@ export const addCollectionAndDocuments = async (collectionKey, objectToAdd) => {
 };
 
 export const convertCollectionsSnapshotToMap = collections => {
-	const trnasformedCollection = collections.docs.map(doc => {
+	const transformedCollection = collections.docs.map(doc => {
 		const { title, items } = doc.data();
 
 		return {
@@ -67,18 +67,16 @@ export const convertCollectionsSnapshotToMap = collections => {
 		};
 	});
 
-	//converting array to object using  a reduce function
-
-	return trnasformedCollection.reduce((accumulator, collection) => {
-		accumulator[collection.title.toLowerCase()] = collection; //each title rep a collection
+	return transformedCollection.reduce((accumulator, collection) => {
+		accumulator[collection.title.toLowerCase()] = collection;
 		return accumulator;
-	});
-}; //--> this run for a sing time to store the shop data in the firestore
+	}, {});
+};
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-const provider = new firebase.auth.GoogleAuthProvider(); //--> sign in wil google
+const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
